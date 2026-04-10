@@ -10,5 +10,16 @@ class UserRepository {
 
     return user.rows[0];
   }
+
+  async findByEmail(email) {
+    const isEmailInUse = await pool.query(
+      `SELECT * FROM users WHERE email  = $1`,
+      [email],
+    );
+    if (isEmailInUse.length > 0) {
+      return emailInUse.rows[0];
+    }
+    return null;
+  }
 }
-module.exports = new UserRepository();
+module.exports = UserRepository;
