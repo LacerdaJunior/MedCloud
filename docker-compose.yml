@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-dev
+    environment:
+      POSTGRES_DB: meu_banco
+      POSTGRES_USER: meu_usuario
+      POSTGRES_PASSWORD: minha_senha
+      POSTGRES_HOST: meu_host
+      POSTGRES_PORT: minha_port
+    ports:
+      - "5432:5432"
+    volumes:
+      - /var/lib/postgresql/data
+
+volumes:
+  postgres_data:
