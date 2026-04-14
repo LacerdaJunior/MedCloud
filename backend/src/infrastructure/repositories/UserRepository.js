@@ -16,8 +16,8 @@ class UserRepository {
       `SELECT * FROM users WHERE email  = $1`,
       [email],
     );
-    if (isEmailInUse.length > 0) {
-      return emailInUse.rows[0];
+    if (isEmailInUse.rows.length > 0) {
+      return isEmailInUse.rows[0];
     }
     return null;
   }

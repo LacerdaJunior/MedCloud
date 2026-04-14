@@ -22,7 +22,8 @@ class AuthenticateUserUseCase {
 
     const token = this.tokenJwtProvider.generateToken({
       id: user.id,
-      email: user.role,
+      email: user.email,
+      role: user.role,
     });
 
     return {

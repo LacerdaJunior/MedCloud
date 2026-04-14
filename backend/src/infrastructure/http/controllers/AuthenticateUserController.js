@@ -1,7 +1,7 @@
 const AuthenticateUserUseCase = require("../../../application/AuthenticateUserUseCase");
 const UserRepository = require("../../repositories/userRepository");
-const TokenJwtProvider = require("../../../infrastructure/providers/TokenJwtProvider");
-const HashProvider = require("../../../infrastructure/providers/HashProvider");
+const TokenJwtProvider = require("../../providers/TokenJwtProvider");
+const HashProvider = require("../../providers/HashProvider");
 
 class AuthenticateUserController {
   async handle(request, response) {
