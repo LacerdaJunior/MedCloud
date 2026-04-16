@@ -16,9 +16,5 @@ userRoutes.get("/profile", ensureAuthenticated, (request, response) => {
   return profileController.handle(request, response);
 });
 
-userRoutes.get("/test",ensureAuthenticated,ensureAdmin , (request, response) => {
-  
-  return response.json({message: "Acesso liberated! ow yeahs fuck yeah"})
-});  
 
 module.exports = userRoutes;

@@ -1,30 +1,37 @@
+const Appointment = require("../domain/entities/Appointment");
 const User = require("../domain/entities/User");
 
 class CreateAppointmentUseCase {
   constructor(AppointmentsRepository) {
-    this.AppointmentsRepository;
+    this.appointmentsRepository = AppointmentsRepository;
   }
 
-  async execute(patientId, doctorId, date, title, description, ) {
-    const emailAlreadyExists = await this.userRepository.findByEmail(email);
+  async execute(title, description, patientId, doctorId, date) {
+    const isAppointmentScheduled =
+      await this.appointmentsRepository.appointmentIsTaken(doctorId, date);
 
-    if (emailAlreadyExists) {
-      throw new Error("O email informado já está em uso.");
+    if (isAppointmentScheduled) {
+      throw new Error("Erro ao marcar consulta, horário já está ocupado");
     }
-    const generatedId = crypto.randomUUID();
 
-    const user = new User(generatedId, name, email, password);
+    const appointment = new Appointment({
+      title,
+      description,
+      patientId,
+      doctorId,
+      date,
+    });
 
-    const hashedPassword = await this.hashProvider.hash(user.password);
-
-    user.password = hashedPassword;
-    await this.userRepository.save(user);
+    await this.appointmentsRepository.save(appointment);
 
     return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      message: "Usuário criado com sucesso",
+      id: appointment.id,
+      title: appointment.title,
+      description: appointment.description,
+      doctorId: appointment.doctorId,
+      patientId: appointment.patientId,
+      date: appointment.date,
+      message: "Consulta agendada com sucesso",
     };
   }
 }

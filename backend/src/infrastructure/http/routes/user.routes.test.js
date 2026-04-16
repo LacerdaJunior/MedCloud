@@ -3,6 +3,7 @@ const TokenJwtProvider = require("../../providers/TokenJwtProvider");
 const app = require("../../../../app");
 
 jest.mock("../../../infrastructure/repositories/userRepository");
+jest.mock("../../repositories/AppointmentsRepository");
 
 describe("User Routes ", () => {
   it("deve criar um usuário e retornar status 201 na rota POST /users", async () => {
@@ -26,29 +27,43 @@ describe("User Routes ", () => {
     expect(response.status).toBe(400);
   });
 
-  it("deve barrar o usuário de acessar arota rota GET em /test se não for admin, error 403", async () => {
+  it("deve barrar o usuário de agendar consulta se não for admin, error 403", async () => {
     const token = new TokenJwtProvider().generateToken({
       id: "hello-fake-id",
       role: "user",
     });
 
     const response = await request(app)
-      .get("/users/test")
-      .set("Authorization", `Bearer ${token}`);
+      .post("/appointments")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        title: "Consulta Teste",
+        description: "Exame de rotina",
+        patientId: "paciente-123",
+        doctorId: "medico-321",
+        date: new Date(Date.now() + 1000000),
+      });
 
     expect(response.status).toBe(403);
   });
 
-   it("deve permitir o usuário acessar a rota rota GET em /test caso sua role seja admin, 200 ok", async () => {
+  it("deve permitir o admin agendar uma consulta com sucesso, 201 Created", async () => {
     const token = new TokenJwtProvider().generateToken({
       id: "hello-fake-id",
       role: "admin",
     });
 
     const response = await request(app)
-      .get("/users/test")
-      .set("Authorization", `Bearer ${token}`);
+      .post("/appointments")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        title: "Consulta Teste",
+        description: "Exame de rotina",
+        patientId: "paciente-1223",
+        doctorId: "medico-3231",
+        date: new Date(Date.now() + 10000000),
+      });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
   });
 });
