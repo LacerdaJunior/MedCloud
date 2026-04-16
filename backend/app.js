@@ -9,6 +9,7 @@ app.use(express.json());
 app.use("/users", userRoutes);
 app.use("/sessions", sessionRoutes);
 app.use("/profile", userRoutes);
+app.use("/test", userRoutes);
 //----------------------------- -------------------------------------------------------------
 
 module.exports = app;
