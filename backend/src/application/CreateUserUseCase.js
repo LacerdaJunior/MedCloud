@@ -1,6 +1,7 @@
 const User = require("../domain/entities/User");
 
 const crypto = require("crypto");
+const AppError = require("../errors/AppError");
 
 class CreateUserUseCase {
   constructor(userRepository, hashProvider) {
@@ -12,7 +13,7 @@ class CreateUserUseCase {
     const emailAlreadyExists = await this.userRepository.findByEmail(email);
 
     if (emailAlreadyExists) {
-      throw new Error("O email informado já está em uso.");
+      throw new AppError("O email informado já está em uso.", 400);
     }
     const generatedId = crypto.randomUUID();
 

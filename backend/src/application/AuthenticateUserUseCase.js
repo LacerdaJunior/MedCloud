@@ -1,3 +1,5 @@
+const AppError = require("../errors/AppError");
+
 class AuthenticateUserUseCase {
   constructor(userRepository, hashProvider, tokenJwtProvider) {
     this.userRepository = userRepository;
@@ -8,7 +10,7 @@ class AuthenticateUserUseCase {
   async execute(email, password) {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      throw new Error("Credenciais inválidas");
+      throw new AppError("Credenciais inválidas", 400);
     }
 
     const userPassword = await this.hashProvider.compare(
@@ -17,7 +19,7 @@ class AuthenticateUserUseCase {
     );
 
     if (!userPassword) {
-      throw new Error("Credenciais inválidas");
+      throw new AppError("Credenciais inválidas", 400);
     }
 
     const token = this.tokenJwtProvider.generateToken({

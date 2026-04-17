@@ -12,14 +12,12 @@ class CreateUserController {
       userRepository,
       passwordHasher,
     );
-    try {
+   
       const result = await createUserUseCase.execute(name, email, password);
 
       return response.status(201).json(result);
-    } catch (error) {
-      console.log(error);
-      return response.status(400).json({ error: error.message });
-    }
+   
+
   }
 }
 

@@ -9,14 +9,11 @@ class CreateAppointmentController {
     const createAppointmentUseCase = new CreateAppointmentUseCase(
       appointmentsRepository,
     );
-    try {
+
       const result = await createAppointmentUseCase.execute(title, description, patientId, doctorId, date);
 
       return response.status(201).json(result);
-    } catch (error) {
-      console.log(error);
-      return response.status(400).json({ error: error.message });
-    }
+
   }
 }
 

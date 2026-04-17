@@ -1,3 +1,5 @@
+const AppError = require("../errors/AppError");
+
 class GetProfileUseCase {
   constructor(userRepository) {
     this.userRepository = userRepository;
@@ -7,7 +9,7 @@ class GetProfileUseCase {
     const user = await this.userRepository.findById(id);
 
     if (!user) {
-      throw new Error("Usuário não encontrado");
+      throw new AppError("Usuário não encontrado", 404);
     }
 
     return {

@@ -1,3 +1,4 @@
+const AppError = require("../../errors/AppError");
 const pool = require("../database/config/connection");
 
 class AppointmentsRepository {
@@ -13,7 +14,7 @@ class AppointmentsRepository {
       );
 
       if (checkResult.rows.length > 0) {
-        throw new Error("Erro ao marcar consulta, horário já está ocupado");
+        throw new AppError("Erro ao marcar consulta, horário já está ocupado", 409);
       }
 
       await client.query(
@@ -30,7 +31,7 @@ class AppointmentsRepository {
     }
   }
 
-  async findManyById(userId, role) {
+  async findManyByUserId(userId, role) {
     const columname = role === "admin" ? "doctor_id" : "patient_id";
 
     const query = `SELECT * FROM appointments WHERE ${columname} = $1 ORDER BY date ASC`;

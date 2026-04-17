@@ -17,13 +17,9 @@ class AuthenticateUserController {
       tokenJwt,
     );
 
-    try {
-      const result = await authenticateUserUseCase.execute(email, password);
+    const result = await authenticateUserUseCase.execute(email, password);
 
-      return response.status(200).json(result);
-    } catch (error) {
-      return response.status(401).json({ error: error.message });
-    }
+    return response.status(200).json(result);
   }
 }
 

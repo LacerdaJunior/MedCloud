@@ -12,6 +12,6 @@ app.use("/sessions", sessionRoutes);
 app.use("/profile", userRoutes);
 app.use("/appointments", appointmentsRoutes);
 
-//----------------------------- -------------------------------------------------------------
+//----------------------------- ---------------------------------------------------------
 
 module.exports = app;

@@ -8,12 +8,8 @@ class ProfileController {
     const userRepository = new UserRepository();
     const getProfileUseCase = new GetProfileUseCase(userRepository);
 
-    try {
-      const result = await getProfileUseCase.execute(id);
-      return response.status(200).json(result);
-    } catch (error) {
-      return response.status(400).json({ error: error.message });
-    }
+    const result = await getProfileUseCase.execute(id);
+    return response.status(200).json(result);
   }
 }
 
