@@ -5,7 +5,9 @@ jest.mock("../../repositories/AppointmentsRepository");
 describe("Appointment Routes", () => {
   it("Deve lançar erro se o horário já estiver ocupado", async () => {
     const mockAppointmentsRepository = {
-      appointmentIsTaken: async () => true,
+      save: async () => {
+        throw new Error("Erro ao marcar consulta, horário já está ocupado");
+      },
     };
 
     const useCase = new CreateAppointmentUseCase(mockAppointmentsRepository);
@@ -18,7 +20,6 @@ describe("Appointment Routes", () => {
 
   it("Deve permitir o usuário agendar uma consulta", async () => {
     const mockAppointmentsRepository = {
-      appointmentIsTaken: async () => false,
       save: async () => true,
     };
 

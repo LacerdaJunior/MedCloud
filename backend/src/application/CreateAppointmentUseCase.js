@@ -7,13 +7,6 @@ class CreateAppointmentUseCase {
   }
 
   async execute(title, description, patientId, doctorId, date) {
-    const isAppointmentScheduled =
-      await this.appointmentsRepository.appointmentIsTaken(doctorId, date);
-
-    if (isAppointmentScheduled) {
-      throw new Error("Erro ao marcar consulta, horário já está ocupado");
-    }
-
     const appointment = new Appointment({
       title,
       description,

@@ -20,5 +20,6 @@ class Appointment {
     this.patientId = patientId;
     this.doctorId = doctorId;
   }
+  
 }
 module.exports = Appointment;

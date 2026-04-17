@@ -4,7 +4,7 @@ async function CreateTables() {
   try {
     await pool.query(`
 
-        CREATE TABLE users(
+        CREATE TABLE users IF NOT EXISTS(
         id VARCHAR(36) PRIMARY KEY,
         name VARCHAR(90) NOT NULL,
         email VARCHAR(150) NOT NULL,
@@ -16,7 +16,7 @@ async function CreateTables() {
 
     await pool.query(`
 
-        CREATE TABLE appointments(
+        CREATE TABLE appointments IF NOT EXISTS(
         id VARCHAR(36) PRIMARY KEY,
         title VARCHAR(90) NOT NULL,
         description VARCHAR(150),
