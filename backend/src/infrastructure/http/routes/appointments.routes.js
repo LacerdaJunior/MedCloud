@@ -4,18 +4,27 @@ const ListAppointmentsController = require("../controllers/ListAppointmentsContr
 const ensureAuthenticated = require("../middlewares/ensureAuthenticated");
 const ensureAdmin = require("../middlewares/ensureAdmin");
 
+const {
+  validateAppointmentBody,
+} = require("../validations/CreateAppointmentSchema");
+
 const appointmentsRoutes = Router();
+
 const createAppointmentController = new CreateAppointmentController();
 const listAppointmentsController = new ListAppointmentsController();
 
-appointmentsRoutes.post("/", ensureAuthenticated, ensureAdmin , (request, response) => {
-    
+appointmentsRoutes.post(
+  "/",
+  ensureAuthenticated,
+  ensureAdmin,
+  validateAppointmentBody,
+  (request, response) => {
     return createAppointmentController.handle(request, response);
-});  
-appointmentsRoutes.get("/", ensureAuthenticated, (request, response) => {
-    
-    return listAppointmentsController.handle(request, response);
-});  
+  },
+);
 
+appointmentsRoutes.get("/", ensureAuthenticated, (request, response) => {
+  return listAppointmentsController.handle(request, response);
+});
 
 module.exports = appointmentsRoutes;
