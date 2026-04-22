@@ -9,7 +9,7 @@ class CreateUserUseCase {
     this.hashProvider = hashProvider;
   }
 
-  async execute(name, email, password) {
+  async execute(name, email, password, role) {
     const emailAlreadyExists = await this.userRepository.findByEmail(email);
 
     if (emailAlreadyExists) {
@@ -17,7 +17,7 @@ class CreateUserUseCase {
     }
     const generatedId = crypto.randomUUID();
 
-    const user = new User(generatedId, name, email, password);
+    const user = new User(generatedId, name, email, password, role);
 
     const hashedPassword = await this.hashProvider.hash(user.password);
 
@@ -28,6 +28,7 @@ class CreateUserUseCase {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       message: "Usuário criado com sucesso",
     };
   }

@@ -4,7 +4,7 @@ const ListAppointmentsController = require("../controllers/ListAppointmentsContr
 const ensureAuthenticated = require("../middlewares/ensureAuthenticated");
 const ensureAdmin = require("../middlewares/ensureAdmin");
 
-// Importando o segurança!
+
 const {
   validateAppointmentBody,
 } = require("../validations/CreateAppointmentSchema");
@@ -18,7 +18,7 @@ appointmentsRoutes.post(
   "/",
   ensureAuthenticated,
   ensureAdmin,
-  validateAppointmentBody, // Aqui ele entra na fila!
+  validateAppointmentBody, 
   (request, response) => {
     return createAppointmentController.handle(request, response);
   },

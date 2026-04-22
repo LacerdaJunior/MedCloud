@@ -1,4 +1,4 @@
-const { z, ZodError } = require("zod");
+const { z } = require("zod");
 const AppError = require("../../../errors/AppError");
 
 const createAppointmentSchema = z.object({
@@ -10,16 +10,20 @@ const createAppointmentSchema = z.object({
 });
 
 function validateAppointmentBody(request, response, next) {
-  try {
-    const data = createAppointmentSchema.parse(request.body);
-    request.body = data;
-    return next();
-  } catch (error) {
-    if (error instanceof ZodError) {
-      throw new AppError(error.errors[0].message, 400);
-    }
-    return next(error);
+  const result = createAppointmentSchema.safeParse(request.body);
+
+  if (!result.success) {
+    const flatErrors = result.error.flatten();
+    const firstKey = Object.keys(flatErrors.fieldErrors)[0];
+    const errorMessage = firstKey
+      ? flatErrors.fieldErrors[firstKey][0]
+      : "Formato de dados inválido.";
+
+    throw new AppError(errorMessage, 400);
   }
+
+  request.body = result.data;
+  return next();
 }
 
 module.exports = { validateAppointmentBody, createAppointmentSchema };

@@ -3,20 +3,18 @@ const pool = require("./connection");
 async function CreateTables() {
   try {
     await pool.query(`
-
-        CREATE TABLE users IF NOT EXISTS(
+        CREATE TABLE IF NOT EXISTS users (
         id VARCHAR(36) PRIMARY KEY,
         name VARCHAR(90) NOT NULL,
         email VARCHAR(150) NOT NULL,
         password TEXT  NOT NULL,
         role VARCHAR(15) NOT NULL
         );
-        `);
-    console.log("Tabela users criada com sucesso!");
+    `);
+    console.log("✅ Tabela users criada com sucesso!");
 
     await pool.query(`
-
-        CREATE TABLE appointments IF NOT EXISTS(
+        CREATE TABLE IF NOT EXISTS appointments (
         id VARCHAR(36) PRIMARY KEY,
         title VARCHAR(90) NOT NULL,
         description VARCHAR(150),
@@ -26,8 +24,8 @@ async function CreateTables() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         date TIMESTAMP NOT NULL
         );
-        `);
-    console.log("Tabela appoinments criada com sucesso!");
+    `);
+    console.log("✅ Tabela appointments criada com sucesso!");
   } catch (error) {
     console.error("❌ Erro ao criar tabelas:", error);
   } finally {
