@@ -31,7 +31,7 @@ describe("Session Routes", () => {
     UserRepository.prototype.findByEmail.mockResolvedValue({
       id: "12345",
       name: "Guilherme",
-      email: "gui@email.com",
+      email: "gui1@email.com",
       password: fakePasswordHash,
       role: "admin",
     });

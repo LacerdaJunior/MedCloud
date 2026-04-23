@@ -13,7 +13,7 @@ class CreateUserUseCase {
     const emailAlreadyExists = await this.userRepository.findByEmail(email);
 
     if (emailAlreadyExists) {
-      throw new AppError("O email informado já está em uso.", 400);
+      throw new AppError("O email informado já está em uso.", 401);
     }
     const generatedId = crypto.randomUUID();
 

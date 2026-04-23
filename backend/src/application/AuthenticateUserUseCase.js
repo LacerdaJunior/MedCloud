@@ -10,7 +10,7 @@ class AuthenticateUserUseCase {
   async execute(email, password) {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      throw new AppError("Credenciais inválidas", 400);
+      throw new AppError("Credenciais inválidas", 401);
     }
 
     const userPassword = await this.hashProvider.compare(
@@ -19,7 +19,7 @@ class AuthenticateUserUseCase {
     );
 
     if (!userPassword) {
-      throw new AppError("Credenciais inválidas", 400);
+      throw new AppError("Credenciais inválidas", 401);
     }
 
     const token = this.tokenJwtProvider.generateToken({

@@ -1,8 +1,6 @@
 const { Pool } = require("pg");
 require("dotenv").config();
 
-console.log("Lendo senha do .env:", process.env.POSTGRES_PASSWORD);
-
 const pool = new Pool({
   host: process.env.POSTGRES_HOST || "localhost",
   user: process.env.POSTGRES_USER || "admin",
