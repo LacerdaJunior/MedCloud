@@ -14,7 +14,10 @@ class AppointmentsRepository {
       );
 
       if (checkResult.rows.length > 0) {
-        throw new AppError("Erro ao marcar consulta, horário já está ocupado", 409);
+        throw new AppError(
+          "Erro ao marcar consulta, horário já está ocupado",
+          409,
+        );
       }
 
       await client.query(
@@ -39,6 +42,17 @@ class AppointmentsRepository {
     const result = await pool.query(query, [userId]);
 
     return result.rows;
+  }
+
+  async deleteAppointment(id) {
+    const result = await pool.query(
+      `DELETE FROM appointments 
+       WHERE id = $1 
+       RETURNING *`,
+      [id],
+    );
+
+    return result.rows[0];
   }
 }
 module.exports = AppointmentsRepository;

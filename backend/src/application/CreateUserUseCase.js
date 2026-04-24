@@ -17,7 +17,7 @@ class CreateUserUseCase {
     }
     const generatedId = crypto.randomUUID();
 
-    const user = new User(generatedId, name, email, password, role);
+    const user = new User(generatedId, name, email, password, "user");
 
     const hashedPassword = await this.hashProvider.hash(user.password);
 

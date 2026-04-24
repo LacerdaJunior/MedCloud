@@ -1,9 +1,9 @@
 const { Router } = require("express");
 const CreateAppointmentController = require("../controllers/CreateAppointmentController");
 const ListAppointmentsController = require("../controllers/ListAppointmentsController");
+const DeleteAppointmentController = require("../controllers/DeleteAppointmentController");
 const ensureAuthenticated = require("../middlewares/ensureAuthenticated");
 const ensureAdmin = require("../middlewares/ensureAdmin");
-
 
 const {
   validateAppointmentBody,
@@ -13,12 +13,13 @@ const appointmentsRoutes = Router();
 
 const createAppointmentController = new CreateAppointmentController();
 const listAppointmentsController = new ListAppointmentsController();
+const deleteAppointmentController = new DeleteAppointmentController();
 
 appointmentsRoutes.post(
   "/",
   ensureAuthenticated,
   ensureAdmin,
-  validateAppointmentBody, 
+  validateAppointmentBody,
   (request, response) => {
     return createAppointmentController.handle(request, response);
   },
@@ -27,5 +28,12 @@ appointmentsRoutes.post(
 appointmentsRoutes.get("/", ensureAuthenticated, (request, response) => {
   return listAppointmentsController.handle(request, response);
 });
+
+appointmentsRoutes.delete(
+  "/:appointmentId",
+  ensureAuthenticated,
+  ensureAdmin,
+  (request, response) => deleteAppointmentController.handle(request, response),
+);
 
 module.exports = appointmentsRoutes;

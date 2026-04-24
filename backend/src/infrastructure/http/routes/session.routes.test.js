@@ -10,7 +10,7 @@ describe("Session Routes", () => {
     const fakePasswordHash = await bcrypt.hash("senha123", 10);
 
     UserRepository.prototype.findByEmail.mockResolvedValue({
-      id: "12345",
+      id: "40fb4118-e13d-448d-abd1-6dd36cc0afd4",
       name: "Guilherme",
       email: "gui@email.com",
       password: fakePasswordHash,
@@ -29,7 +29,7 @@ describe("Session Routes", () => {
     const fakePasswordHash = await bcrypt.hash("senha123", 10);
 
     UserRepository.prototype.findByEmail.mockResolvedValue({
-      id: "12345",
+      id: "40fb4118-e13d-448d-abd1-6dd36cc0afd2",
       name: "Guilherme",
       email: "gui1@email.com",
       password: fakePasswordHash,

@@ -39,8 +39,8 @@ describe("User Routes ", () => {
       .send({
         title: "Consulta Teste",
         description: "Exame de rotina",
-        patientId: "paciente-123",
-        doctorId: "medico-321",
+        patientId: "40fb4118-e13d-448d-abd1-6dd36cc0afd5",
+        doctorId: "40fb4118-e13d-448d-abd1-6dd36cc0afd4",
         date: new Date(Date.now() + 1000000),
       });
 
@@ -59,8 +59,8 @@ describe("User Routes ", () => {
       .send({
         title: "Consulta Teste",
         description: "Exame de rotina",
-        patientId: "paciente-1223",
-        doctorId: "medico-3231",
+        patientId: "40fb4118-e13d-448d-abd1-6dd36cc0afd2",
+        doctorId: "40fb4118-e13d-448d-abd1-6dd36cc0afd1",
         date: new Date(Date.now() + 10000000),
       });
 

@@ -13,6 +13,8 @@ describe("Appointment Routes", () => {
     const useCase = new CreateAppointmentUseCase(mockAppointmentsRepository);
 
     const date = new Date();
+    date.setDate(date.getDate() + 7); 
+
     await expect(
       useCase.execute("appointment test", "routine", "123", "12322", date),
     ).rejects.toThrow("Erro ao marcar consulta, horário já está ocupado");
@@ -24,7 +26,9 @@ describe("Appointment Routes", () => {
     };
 
     const useCase = new CreateAppointmentUseCase(mockAppointmentsRepository);
-    const date = new Date(Date.now() + 1000000);
+   
+    const date = new Date();
+    date.setDate(date.getDate() + 7); 
     const result = await useCase.execute(
       "appointment test",
       "routine",
