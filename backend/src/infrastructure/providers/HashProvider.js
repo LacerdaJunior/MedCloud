@@ -2,7 +2,8 @@ const bcrypt = require("bcrypt");
 
 class HashProvider {
   async hash(password) {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const saltRounds = process.env.NODE_ENV === "test" ? 1 : 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
     return hashedPassword;
   }
 

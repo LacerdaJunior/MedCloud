@@ -9,7 +9,7 @@ class CreateUserUseCase {
     this.hashProvider = hashProvider;
   }
 
-  async execute(name, email, password, role) {
+  async execute(name, email, password) {
     const emailAlreadyExists = await this.userRepository.findByEmail(email);
 
     if (emailAlreadyExists) {
