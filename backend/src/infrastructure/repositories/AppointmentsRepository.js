@@ -34,6 +34,25 @@ class AppointmentsRepository {
     }
   }
 
+  async updateAppointment(newStatus, appointmentId) {
+    await pool.query(`UPDATE appointments SET status = $1 WHERE id = $2 `, [
+      newStatus,
+      appointmentId,
+    ]);
+    return true;
+  }
+
+  async findByAppointmentId(appointmentId) {
+    const result = await pool.query(
+      `SELECT * FROM appointments WHERE id = $1`,
+      [appointmentId],
+    );
+    if (result.rows.length > 0) {
+      return result.rows[0];
+    }
+    return null;
+  }
+
   async findManyByUserId(userId, role) {
     const columname = role === "admin" ? "doctor_id" : "patient_id";
 
