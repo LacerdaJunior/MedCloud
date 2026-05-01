@@ -1,8 +1,11 @@
 class Appointment {
+  static get validStatuses() {
+    return ["scheduled", "finished", "cancelled"];
+  }
   constructor({ title, description, patientId, doctorId, date }) {
     const generatedId = crypto.randomUUID();
-    const defaultStatus = "scheduled";
     this.id = generatedId;
+    const defaultStatus = "scheduled";
     this.status = defaultStatus;
 
     const now = new Date();
