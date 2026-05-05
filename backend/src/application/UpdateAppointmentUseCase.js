@@ -8,7 +8,7 @@ class UpdateAppointmentUseCase {
 
   async execute({ appointmentId, status }) {
     const appointment =
-      await this.appointmentsRepository.findById(appointmentId);
+      await this.appointmentsRepository.findByAppointmentId(appointmentId);
 
     if (!appointment) {
       throw new AppError("Consulta não encontrada.", 404);

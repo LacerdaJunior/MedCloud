@@ -4,13 +4,14 @@ const AppointmentsRepository = require("../../repositories/AppointmentsRepositor
 class ListAppointmentsController {
   async handle(request, response) {
     const { id, role } = request.user;
+    const { status } = request.query;
     const appointmentsRepository = new AppointmentsRepository();
 
     const listAppointmentsUseCase = new ListAppointmentsUseCase(
       appointmentsRepository,
     );
 
-    const result = await listAppointmentsUseCase.execute(id, role);
+    const result = await listAppointmentsUseCase.execute({userId: id, role, status});
 
     return response.status(200).json(result);
   }

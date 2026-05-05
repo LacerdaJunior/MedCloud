@@ -53,13 +53,19 @@ class AppointmentsRepository {
     return null;
   }
 
-  async findManyByUserId(userId, role) {
+  async findManyByUserId({ userId, role, status }) {
     const columname = role === "admin" ? "doctor_id" : "patient_id";
 
-    const query = `SELECT * FROM appointments WHERE ${columname} = $1 ORDER BY date ASC`;
+    let query = `SELECT * FROM appointments WHERE ${columname} = $1`;
+    let values = [userId];
 
-    const result = await pool.query(query, [userId]);
+    if (status) {
+      query += `AND status = $2 `;
+      values.push(status);
+    }
+    query += ` ORDER BY date ASC`;
 
+    const result = await pool.query(query, values);
     return result.rows;
   }
 
