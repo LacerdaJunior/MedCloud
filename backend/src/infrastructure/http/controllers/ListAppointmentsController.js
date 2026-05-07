@@ -16,7 +16,7 @@ class ListAppointmentsController {
       userId: id,
       role,
       status,
-      page,
+      page: Number(page),
     });
 
     return response.status(200).json(result);
