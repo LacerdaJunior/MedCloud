@@ -13,7 +13,7 @@ app.use("/sessions", sessionRoutes);
 app.use("/profile", userRoutes);
 app.use("/appointments", appointmentsRoutes);
 
-//----------------------------- ---------------------------------------------------------
+//----------------------------- MIDDLEWARE GLOBAL DE ERROS ------------------------------
 app.use((error, request, response, next) => {
   if (error instanceof AppError) {
     return response.status(error.statusCode).json({
@@ -29,4 +29,5 @@ app.use((error, request, response, next) => {
     message: "Erro interno do servidor",
   });
 });
+
 module.exports = app;

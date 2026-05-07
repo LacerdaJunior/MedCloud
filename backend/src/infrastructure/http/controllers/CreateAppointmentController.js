@@ -10,7 +10,7 @@ class CreateAppointmentController {
       appointmentsRepository,
     );
 
-      const result = await createAppointmentUseCase.execute(title, description, patientId, doctorId, date);
+      const result = await createAppointmentUseCase.execute({title, description, patientId, doctorId, date});
 
       return response.status(201).json(result);
 

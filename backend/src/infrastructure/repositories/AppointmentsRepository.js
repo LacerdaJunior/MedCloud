@@ -8,18 +8,6 @@ class AppointmentsRepository {
     try {
       await client.query("BEGIN");
 
-      const checkResult = await client.query(
-        "SELECT * FROM appointments WHERE doctor_id = $1 AND date = $2",
-        [doctorId, date],
-      );
-
-      if (checkResult.rows.length > 0) {
-        throw new AppError(
-          "Erro ao marcar consulta, horário já está ocupado",
-          409,
-        );
-      }
-
       await client.query(
         "INSERT INTO appointments(id, title, description, patient_id, doctor_id, date) VALUES ($1, $2, $3, $4, $5, $6)",
         [id, title, description, patientId, doctorId, date],
@@ -32,6 +20,17 @@ class AppointmentsRepository {
     } finally {
       client.release();
     }
+  }
+
+  async findByDoctorAndDate({ doctorId, date }) {
+    const result = await pool.query(
+      "SELECT * FROM appointments WHERE doctor_id = $1 AND date = $2",
+      [doctorId, date],
+    );
+    if (result.rows.length > 0) {
+      return result.rows[0];
+    }
+    return null;
   }
 
   async updateAppointment(newStatus, appointmentId) {
@@ -57,15 +56,17 @@ class AppointmentsRepository {
     const columname = role === "admin" ? "doctor_id" : "patient_id";
 
     let query = `SELECT * FROM appointments WHERE ${columname} = $1`;
+    let countQuery = `SELECT COUNT (*) FROM appointments WHERE ${columname} = $1`;
     let values = [userId];
 
     if (status) {
       values.push(status);
       query += ` AND status = $${values.length}`;
+      countQuery += ` AND status = $${values.length}`;
     }
 
     query += ` ORDER BY date ASC`;
-
+    const countResult = await pool.query(countQuery, values);
     values.push(limit);
     query += ` LIMIT $${values.length}`;
 
@@ -74,7 +75,10 @@ class AppointmentsRepository {
 
     const result = await pool.query(query, values);
 
-    return result.rows;
+    return {
+      appointments: result.rows,
+      total: countResult.rows[0].count,
+    };
   }
 
   async deleteAppointment(id) {

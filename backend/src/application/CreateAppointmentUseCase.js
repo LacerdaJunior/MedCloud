@@ -1,12 +1,12 @@
 const Appointment = require("../domain/entities/Appointment");
-const User = require("../domain/entities/User");
+const AppError = require("../errors/AppError");
 
 class CreateAppointmentUseCase {
   constructor(AppointmentsRepository) {
     this.appointmentsRepository = AppointmentsRepository;
   }
 
-  async execute(title, description, patientId, doctorId, date) {
+  async execute({ title, description, patientId, doctorId, date }) {
     const appointment = new Appointment({
       title,
       description,
@@ -15,6 +15,17 @@ class CreateAppointmentUseCase {
       date,
     });
 
+    const checkResult = await this.appointmentsRepository.findByDoctorAndDate({
+      doctorId,
+      date,
+    });
+
+    if (checkResult) {
+      throw new AppError(
+        "A Consulta não pode ser agendada, pois o horário já está ocupado.",
+        409,
+      );
+    }
     await this.appointmentsRepository.save(appointment);
 
     return {
