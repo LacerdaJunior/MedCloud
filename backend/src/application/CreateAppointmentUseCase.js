@@ -1,5 +1,7 @@
+const app = require("../../app");
 const Appointment = require("../domain/entities/Appointment");
 const AppError = require("../errors/AppError");
+const dayjs = require("dayjs");
 
 class CreateAppointmentUseCase {
   constructor(AppointmentsRepository) {
@@ -7,6 +9,20 @@ class CreateAppointmentUseCase {
   }
 
   async execute({ title, description, patientId, doctorId, date }) {
+    const appointmentDate = dayjs(date);
+
+    if (appointmentDate.minute() !== 0) {
+      throw new AppError("Consultas apenas podem ser de hora em hora.", 400);
+    }
+
+    if (!appointmentDate.isValid()) {
+      throw new AppError("Formato de data inválido.", 400);
+    }
+
+    if (appointmentDate.isBefore(dayjs())) {
+      throw new AppError("A Consulta não pode ser agendada no passado.", 400);
+    }
+
     const appointment = new Appointment({
       title,
       description,
