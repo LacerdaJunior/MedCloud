@@ -1,4 +1,4 @@
-const DeleteAppointmentsUseCase = require("../../../application/ListAppointmentsUseCase");
+const DeleteAppointmentsUseCase = require("../../../application/DeleteAppointmentsUseCase");
 const AppointmentsRepository = require("../../repositories/AppointmentsRepository");
 
 class DeleteAppointmentController {

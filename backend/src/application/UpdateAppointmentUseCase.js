@@ -1,5 +1,7 @@
 const AppError = require("../errors/AppError");
 const Appointment = require("../domain/entities/Appointment");
+const dayjs = require("dayjs");
+const app = require("../../app");
 
 class UpdateAppointmentUseCase {
   constructor(appointmentsRepository) {
@@ -12,6 +14,15 @@ class UpdateAppointmentUseCase {
 
     if (!appointment) {
       throw new AppError("Consulta não encontrada.", 404);
+    }
+
+    const hoursDiff = dayjs(appointment.date).diff(dayjs(), "hours");
+
+    if (status === "cancelled" && hoursDiff < 24) {
+      throw new AppError(
+        "Você não pode cancelar uma consulta em menos de 24 horas.",
+        400,
+      );
     }
     if (!Appointment.validStatuses.includes(status)) {
       throw new AppError("Status inválido.", 400);
