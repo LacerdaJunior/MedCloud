@@ -24,9 +24,6 @@ class UpdateAppointmentUseCase {
         400,
       );
     }
-    if (!Appointment.validStatuses.includes(status)) {
-      throw new AppError("Status inválido.", 400);
-    }
 
     if (
       appointment.status === "finished" ||

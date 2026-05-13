@@ -81,6 +81,20 @@ class AppointmentsRepository {
     };
   }
 
+  async findAllInDayFromProvider({ providerId, day, month, year }) {
+    const result = await pool.query(
+      `SELECT * FROM appointments 
+       WHERE doctor_id = $1 
+       AND EXTRACT(DAY FROM date) = $2 
+       AND EXTRACT(MONTH FROM date) = $3 
+       AND EXTRACT(YEAR FROM date) = $4
+       AND status != 'cancelled'`,
+      [providerId, day, month, year],
+    );
+
+    return result.rows;
+  }
+
   async deleteAppointment(id) {
     const result = await pool.query(
       `DELETE FROM appointments 
