@@ -95,6 +95,19 @@ class AppointmentsRepository {
     return result.rows;
   }
 
+  async findAllInMonthFromProvider({ providerId, month, year }) {
+    const result = await pool.query(
+      `SELECT * FROM appointments 
+       WHERE doctor_id = $1 
+       AND EXTRACT(MONTH FROM date) = $2 
+       AND EXTRACT(YEAR FROM date) = $3
+       AND status != 'cancelled'`,
+      [providerId, month, year],
+    );
+
+    return result.rows;
+  }
+
   async deleteAppointment(id) {
     const result = await pool.query(
       `DELETE FROM appointments 

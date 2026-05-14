@@ -27,8 +27,8 @@ class ListProviderDayAvailabilityUseCase {
     );
 
     const availability = eachHourArray.map((hour) => {
-      const appointmentInHour = appoitments.find((appointmment) => {
-        const appointmentHour = dayjs(appointmment.date).hour();
+      const appointmentInHour = appoitments.find((appointment) => {
+        const appointmentHour = dayjs(appointment.date).hour();
         return appointmentHour === hour;
       });
       if (appointmentInHour) {
