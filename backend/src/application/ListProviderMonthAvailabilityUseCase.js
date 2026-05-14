@@ -7,27 +7,41 @@ class ListProviderMonthAvailabilityUseCase {
   }
 
   async execute({ providerId, month, year }) {
-    const appointment =
+    const appointments =
       await this.appointmentsRepository.findAllInMonthFromProvider({
         providerId,
         month,
         year,
       });
 
-    if (!appointment) {
-      throw new AppError("Dados não encontrados para este usuário.", 400);
-    }
-
     const referenceDate = new Date(year, month - 1);
+    const numberOfDaysInMonth = dayjs(referenceDate).daysInMonth();
 
-    const numberOffDaysInMonth = dayjs(referenceDate).daysInMonth();
-
-    const availableDaysInMonth = Array.from(
-      { length: numberOffDaysInMonth },
+    const eachDaysInMonth = Array.from(
+      { length: numberOfDaysInMonth },
       (_, index) => index + 1,
     );
 
-    
+    const availability = eachDaysInMonth.map((day) => {
+      const appointmentsInThatDay = appointments.filter((appointment) => {
+        const dayAppointments = dayjs(appointment.date).date();
+        return dayAppointments === day;
+      });
+
+      if (appointmentsInThatDay.length >= 10) {
+        return {
+          day: day,
+          available: false,
+        };
+      }
+
+      return {
+        day: day,
+        available: true,
+      };
+    });
+
+    return availability;
   }
 }
 
