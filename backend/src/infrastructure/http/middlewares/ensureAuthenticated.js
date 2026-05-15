@@ -1,10 +1,12 @@
+const AppError = require("../../../errors/AppError");
+
 const jwt = require("jsonwebtoken");
 
 function authMiddleware(request, response, next) {
   const authHeader = request.headers.authorization;
 
   if (!authHeader) {
-    return response.status(401).json({ error: "token não fornecido" });
+    throw new AppError("Token não fornecido", 401);
   }
 
   const [, token] = authHeader.split(" ");
@@ -16,7 +18,7 @@ function authMiddleware(request, response, next) {
 
     return next();
   } catch (error) {
-    return response.status(401).json({ error: "token, inválido ou expirado." });
+    throw new AppError("Token inválido ou expirado.", 401);
   }
 }
 

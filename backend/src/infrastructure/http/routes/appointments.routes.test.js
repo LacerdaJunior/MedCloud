@@ -1,10 +1,9 @@
 const CreateAppointmentUseCase = require("../../../application/CreateAppointmentUseCase");
 
-jest.mock("../../repositories/AppointmentsRepository");
-
 describe("Appointment Routes", () => {
   it("Deve lançar erro se o horário já estiver ocupado", async () => {
     const mockAppointmentsRepository = {
+      findByDoctorAndDate: async () => null,
       save: async () => {
         throw new Error("Erro ao marcar consulta, horário já está ocupado");
       },
@@ -12,33 +11,37 @@ describe("Appointment Routes", () => {
 
     const useCase = new CreateAppointmentUseCase(mockAppointmentsRepository);
 
-    const date = new Date();
-    date.setDate(date.getDate() + 7);
+    const datePerfeita = new Date(2026, 10, 15, 10, 0, 0);
 
     await expect(
-      useCase.execute("appointment test", "routine", "123", "12322", date),
+      useCase.execute({
+        title: "appointment test",
+        description: "routine",
+        patientId: "123",
+        doctorId: "12322",
+        date: datePerfeita,
+      }),
     ).rejects.toThrow("Erro ao marcar consulta, horário já está ocupado");
   });
 
   it("Deve permitir o usuário agendar uma consulta", async () => {
     const mockAppointmentsRepository = {
+      findByDoctorAndDate: async () => null,
       save: async () => true,
     };
 
     const useCase = new CreateAppointmentUseCase(mockAppointmentsRepository);
 
-    const date = new Date();
-    date.setDate(date.getDate() + 7);
-    const result = await useCase.execute(
-      "appointment test",
-      "routine",
-      "123",
-      "12322",
-      date,
-    );
+    const datePerfeita = new Date(2026, 10, 15, 10, 0, 0);
+
+    const result = await useCase.execute({
+      title: "appointment test",
+      description: "routine",
+      patientId: "123",
+      doctorId: "12322",
+      date: datePerfeita,
+    });
 
     expect(result.message).toBe("Consulta agendada com sucesso");
   });
-
-  
 });

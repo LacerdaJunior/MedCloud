@@ -38,7 +38,7 @@ class CreateAppointmentUseCase {
 
     if (checkResult) {
       throw new AppError(
-        "A Consulta não pode ser agendada, pois o horário já está ocupado.",
+        "Erro ao marcar consulta, horário já está ocupado",
         409,
       );
     }

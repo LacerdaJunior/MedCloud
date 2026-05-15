@@ -5,6 +5,7 @@ const DeleteAppointmentController = require("../controllers/DeleteAppointmentCon
 const UpdateAppointmentController = require("../controllers/UpdateAppointmentController");
 const ListProviderDayAvailabilityController = require("../controllers/ListProviderDayAvailabilityController");
 const ListProviderMonthAvailabilityController = require("../controllers/ListProviderMonthAvailabilityController");
+const ListProviderAppointmentsController = require("../controllers/ListProviderAppointmentsController");
 
 const ensureAuthenticated = require("../middlewares/ensureAuthenticated");
 const ensureAdmin = require("../middlewares/ensureAdmin");
@@ -34,6 +35,8 @@ const listProviderDayAvailabilityController =
   new ListProviderDayAvailabilityController();
 const listProviderMonthAvailabilityController =
   new ListProviderMonthAvailabilityController();
+const listProviderAppointmentsController =
+  new ListProviderAppointmentsController();
 
 appointmentsRoutes.post(
   "/",
@@ -78,6 +81,14 @@ appointmentsRoutes.get(
   ensureAdmin,
   validateListProviderMonthAvailabilityQuery,
   listProviderMonthAvailabilityController.handle,
+);
+
+appointmentsRoutes.get(
+  "/:providerId/schedule",
+  ensureAuthenticated,
+  ensureAdmin,
+  validateListProviderDayAvailabilityQuery,
+  listProviderAppointmentsController.handle,
 );
 
 module.exports = appointmentsRoutes;

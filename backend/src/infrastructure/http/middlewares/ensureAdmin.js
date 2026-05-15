@@ -1,10 +1,13 @@
+const AppError = require("../../../errors/AppError");
+
 function ensureAdmin(request, response, next) {
   const { role } = request.user;
 
   if (role !== "admin") {
-    return response
-      .status(403)
-      .json({ error: "Acesso negado. Requer privilégios de administrador." });
+    throw new AppError(
+      "Acesso negado. Requer privilégios de administrador.",
+      403,
+    );
   }
 
   return next();

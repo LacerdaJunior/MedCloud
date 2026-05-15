@@ -32,7 +32,9 @@ describe("User Routes ", () => {
       id: "hello-fake-id",
       role: "user",
     });
-
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+    date.setHours(10, 0, 0, 0);
     const response = await request(app)
       .post("/appointments")
       .set("Authorization", `Bearer ${token}`)
@@ -41,7 +43,7 @@ describe("User Routes ", () => {
         description: "Exame de rotina",
         patientId: "40fb4118-e13d-448d-abd1-6dd36cc0afd5",
         doctorId: "40fb4118-e13d-448d-abd1-6dd36cc0afd4",
-        date: new Date(Date.now() + 10000),
+        date: date,
       });
 
     expect(response.status).toBe(403);
@@ -52,7 +54,9 @@ describe("User Routes ", () => {
       id: "hello-fake-id",
       role: "admin",
     });
-
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+    date.setHours(10, 0, 0, 0);
     const response = await request(app)
       .post("/appointments")
       .set("Authorization", `Bearer ${token}`)
@@ -61,7 +65,7 @@ describe("User Routes ", () => {
         description: "Exame de rotina",
         patientId: "40fb4118-e13d-448d-abd1-6dd36cc0afd2",
         doctorId: "40fb4118-e13d-448d-abd1-6dd36cc0afd1",
-        date: new Date(Date.now() + 10000),
+        date: date,
       });
 
     expect(response.status).toBe(201);

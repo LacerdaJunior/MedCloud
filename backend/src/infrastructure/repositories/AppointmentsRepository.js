@@ -107,7 +107,28 @@ class AppointmentsRepository {
 
     return result.rows;
   }
+  async findProviderScheduleByDay({ providerId, day, month, year }) {
+    const result = await pool.query(
+      `SELECT 
+        a.id, 
+        a.title, 
+        a.description, 
+        a.date, 
+        a.status,
+        u.name AS patient_name 
+       FROM appointments a
+       JOIN users u ON u.id = a.patient_id
+       WHERE a.doctor_id = $1 
+       AND EXTRACT(DAY FROM a.date) = $2 
+       AND EXTRACT(MONTH FROM a.date) = $3 
+       AND EXTRACT(YEAR FROM a.date) = $4
+       AND a.status != 'cancelled'
+       ORDER BY a.date ASC`,
+      [providerId, day, month, year],
+    );
 
+    return result.rows;
+  }
   async deleteAppointment(id) {
     const result = await pool.query(
       `DELETE FROM appointments 

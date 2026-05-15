@@ -24,7 +24,7 @@ class ListProviderMonthAvailabilityUseCase {
 
     const availability = eachDaysInMonth.map((day) => {
       const appointmentsInThatDay = appointments.filter((appointment) => {
-        const dayAppointments = dayjs(appointment.date).date();
+        const dayAppointments  = dayjs(appointment.date).date();
         return dayAppointments === day;
       });
 
