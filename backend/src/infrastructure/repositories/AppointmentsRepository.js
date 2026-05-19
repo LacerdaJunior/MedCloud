@@ -136,8 +136,9 @@ class AppointmentsRepository {
        RETURNING *`,
       [id],
     );
-
     return result.rows[0];
   }
+
+ 
 }
 module.exports = AppointmentsRepository;

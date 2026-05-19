@@ -29,5 +29,23 @@ class UserRepository {
     }
     return null;
   }
+
+  async updateProfile({ newPassword, newEmail, newName, id }) {
+    const result = await pool.query(
+      `
+    UPDATE users
+    SET
+    password = COALESCE($1, password),
+    email = COALESCE($2, email),
+    name = COALESCE($3, name),
+    updated_at = NOW()
+    WHERE id = $4
+    RETURNING id, name, email, role, updated_at
+    `,
+      [newPassword, newEmail, newName, id],
+    );
+
+    return result.rows[0] || null;
+  }
 }
 module.exports = UserRepository;
