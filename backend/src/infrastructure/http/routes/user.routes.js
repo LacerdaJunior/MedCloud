@@ -6,6 +6,9 @@ const ensureAuthenticated = require("../middlewares/ensureAuthenticated");
 const ensureAdmin = require("../middlewares/ensureAdmin");
 
 const { validateUserBody } = require("../validations/CreateUserSchema");
+const {
+  validateUpdateProfileSchema,
+} = require("../validations/UpdateProfileSchema");
 
 const userRoutes = Router();
 const createUserController = new CreateUserController();
@@ -22,9 +25,12 @@ userRoutes.get("/profile", ensureAuthenticated, (request, response) => {
 });
 
 userRoutes.patch(
-  "/profile",
+  "/profile/update",
   ensureAuthenticated,
-  updateProfileController.handle,
+  validateUpdateProfileSchema,
+  (request, response) => {
+    return updateProfileController.handle(request, response);
+  },
 );
 
 module.exports = userRoutes;
