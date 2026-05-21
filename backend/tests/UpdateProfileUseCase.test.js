@@ -1,18 +1,15 @@
 const UpdateProfileUseCase = require("../src/application/UpdateProfileUseCase");
 const AppError = require("../src/errors/AppError");
 
-// 1. Criamos o "dublê" (Mock) do repositório com as funções que o UseCase usa
 const userRepositoryMock = {
   findById: jest.fn(),
   findByEmail: jest.fn(),
   updateProfile: jest.fn(),
 };
 
-// 2. Injetamos o mock no UseCase
 const updateProfileUseCase = new UpdateProfileUseCase(userRepositoryMock);
 
 describe("UpdateProfileUseCase", () => {
-  // Limpa os mocks antes de cada teste para um não atrapalhar o outro
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -24,10 +21,8 @@ describe("UpdateProfileUseCase", () => {
       email: "gui@test.com",
     };
 
-    // Simulamos que o usuário existe no banco
     userRepositoryMock.findById.mockResolvedValue(user);
 
-    // Simulamos o retorno do banco após o update
     userRepositoryMock.updateProfile.mockResolvedValue({
       ...user,
       name: "Novo Nome",
@@ -50,7 +45,6 @@ describe("UpdateProfileUseCase", () => {
 
     userRepositoryMock.findById.mockResolvedValue(user);
 
-    // O UseCase deve lançar um AppError porque não enviamos oldPassword
     await expect(
       updateProfileUseCase.execute({
         userId: "123",

@@ -1,5 +1,5 @@
 const GetProfileUseCase = require("../../../application/GetProfileUseCase");
-const UserRepository = require("../../repositories/UserRepository");
+const UserRepository = require("../../repositories/userRepository");
 
 class ProfileController {
   async handle(request, response) {
