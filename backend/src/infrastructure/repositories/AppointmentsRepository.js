@@ -53,7 +53,8 @@ class AppointmentsRepository {
   }
 
   async findManyByUserId({ userId, role, status, limit, offset }) {
-    const columname = role === "admin" ? "doctor_id" : "patient_id";
+    const columname =
+      role === "admin" || role === "doctor" ? "doctor_id" : "patient_id";
 
     let query = `SELECT * FROM appointments WHERE ${columname} = $1`;
     let countQuery = `SELECT COUNT (*) FROM appointments WHERE ${columname} = $1`;
@@ -138,7 +139,5 @@ class AppointmentsRepository {
     );
     return result.rows[0];
   }
-
- 
 }
 module.exports = AppointmentsRepository;

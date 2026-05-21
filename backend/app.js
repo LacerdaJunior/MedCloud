@@ -3,9 +3,12 @@ const userRoutes = require("./src/infrastructure/http/routes/user.routes");
 const sessionRoutes = require("./src/infrastructure/http/routes/session.routes");
 const appointmentsRoutes = require("./src/infrastructure/http/routes/appointments.routes");
 const AppError = require("./src/errors/AppError");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 
 const app = express();
 app.use(express.json());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //----------------------------- ROUTES---------------------------------------------------
 app.use("/users", userRoutes);

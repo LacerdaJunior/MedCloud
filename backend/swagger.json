@@ -1,0 +1,418 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MedCloud API",
+    "description": "Documentação completa das rotas da API MedCloud. Inclui gestão de usuários, autenticação, controle de perfil e agendamentos médicos.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor Local"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["Usuários & Perfil"],
+        "summary": "Cadastro de novos usuários",
+        "description": "Cria um novo usuário na plataforma (médico, paciente ou administrador) validando os dados com CreateUserSchema.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password"],
+                "properties": {
+                  "name": { "type": "string", "example": "Guilherme Lacerda" },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "guilherme@medcloud.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "senha123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Usuário criado com sucesso" },
+          "401": { "description": "O e-mail informado já está em uso" }
+        }
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "tags": ["Usuários & Perfil"],
+        "summary": "Visualizar perfil do usuário autenticado",
+        "description": "Retorna os dados públicos do perfil do usuário associado ao Token JWT enviado.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Dados do perfil carregados com sucesso" },
+          "404": { "description": "Usuário não encontrado" }
+        }
+      }
+    },
+    "/users/profile/update": {
+      "patch": {
+        "tags": ["Usuários & Perfil"],
+        "summary": "Atualização de dados do perfil",
+        "description": "Permite atualização parcial (nome e e-mail). Para alterar a senha, é obrigatório fornecer o 'oldPassword' para validação criptográfica.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newName": {
+                    "type": "string",
+                    "example": "Guilherme Lacerda Jr"
+                  },
+                  "newEmail": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "novoemail@medcloud.com"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "example": "novaSenha123"
+                  },
+                  "oldPassword": { "type": "string", "example": "senha123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil atualizado com sucesso (Retorna os dados atualizados via COALESCE)"
+          },
+          "400": {
+            "description": "A senha antiga não confere ou dados de validação incorretos"
+          },
+          "404": { "description": "Usuário não encontrado" }
+        }
+      }
+    },
+    "/sessions": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Autenticação de Usuário (Login)",
+        "description": "Valida as credenciais por e-mail e hash de senha, gerando um Token JWT com o ID e a Role do usuário.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "guilherme@medcloud.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "senha123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Autenticado com sucesso. Retorna objeto do usuário e o token JWT."
+          },
+          "401": { "description": "Credenciais inválidas" }
+        }
+      }
+    },
+    "/appointments": {
+      "post": {
+        "tags": ["Agendamentos"],
+        "summary": "Criar um agendamento de consulta",
+        "description": "Agenda uma nova consulta médica. **Privilégio Admin**. Possui travas contra horários passados, minutos fragmentados (apenas hora em hora) e conflitos de agenda do médico.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title",
+                  "description",
+                  "patientId",
+                  "doctorId",
+                  "date"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Consulta Geral de Rotina"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Retorno para avaliação de exames laboratoriais."
+                  },
+                  "patientId": {
+                    "type": "string",
+                    "example": "uuid-do-paciente"
+                  },
+                  "doctorId": { "type": "string", "example": "uuid-do-medico" },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-06-15T14:00:00Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Consulta agendada com sucesso" },
+          "400": {
+            "description": "Formato de data inválido, fora do padrão de hora em hora ou agendamento no passado"
+          },
+          "409": {
+            "description": "Conflito: O horário escolhido para este médico já está ocupado"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Agendamentos"],
+        "summary": "Listar consultas do usuário logado",
+        "description": "Retorna uma lista paginada das consultas associadas ao ID do usuário autenticado. Adapta a coluna de busca dinamicamente entre 'doctor_id' ou 'patient_id' de acordo com a Role.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Número da página para paginação (Limit 10 por página)"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": { "type": "string" },
+            "description": "Filtrar consultas por status (ex: active, finished, cancelled)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de agendamentos e contagem total retornados com sucesso"
+          }
+        }
+      }
+    },
+    "/appointments/{appointmentId}": {
+      "delete": {
+        "tags": ["Agendamentos"],
+        "summary": "Deletar uma consulta",
+        "description": "Remove permanentemente um agendamento do banco de dados. **Apenas administradores (role admin)** possuem permissão.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appointmentId",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "O ID único do agendamento que será deletado"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Consulta deletada do sistema com sucesso" },
+          "403": {
+            "description": "Permissão negada. Usuário não possui privilégio de administrador"
+          }
+        }
+      }
+    },
+    "/appointments/{appointmentId}/status": {
+      "patch": {
+        "tags": ["Agendamentos"],
+        "summary": "Atualizar status de uma consulta",
+        "description": "Modifica o status de um agendamento. **Privilégio Admin**. Bloqueia cancelamentos se faltarem menos de 24 horas para o horário agendado, e impede edições em consultas finalizadas/canceladas.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appointmentId",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "ID do agendamento"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "finished", "cancelled"],
+                    "example": "cancelled"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Status da consulta atualizado com sucesso" },
+          "400": {
+            "description": "Violação de regra: Cancelamento em menos de 24h ou tentativa de modificar consulta finalizada"
+          },
+          "404": { "description": "Consulta não encontrada" }
+        }
+      }
+    },
+    "/appointments/{appointmentId}/day-availability": {
+      "get": {
+        "tags": ["Disponibilidade Médica"],
+        "summary": "Listar horários disponíveis de um dia",
+        "description": "Retorna uma grade completa de horas comerciais (das 8h às 17h) indicando quais horas estão livres ou ocupadas para o médico. **Privilégio Admin**.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appointmentId",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "O ID enviado na rota para checagem do provedor"
+          },
+          {
+            "in": "query",
+            "name": "day",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 15
+          },
+          {
+            "in": "query",
+            "name": "month",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 6
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 2026
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mapeamento das horas e sinalização de disponibilidade (true/false) retornado"
+          },
+          "400": { "description": "Dados não encontrados para este usuário" }
+        }
+      }
+    },
+    "/appointments/{providerId}/month-availability": {
+      "get": {
+        "tags": ["Disponibilidade Médica"],
+        "summary": "Listar dias disponíveis em um mês",
+        "description": "Mapeia todos os dias do mês informado. Se o médico possuir 10 ou mais agendamentos ativos em um determinado dia, o dia é marcado como indisponível (available: false). **Privilégio Admin**.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "providerId",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "ID do médico"
+          },
+          {
+            "in": "query",
+            "name": "month",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 6
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 2026
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Disponibilidade de cada dia do mês retornada com sucesso"
+          }
+        }
+      }
+    },
+    "/appointments/{providerId}/schedule": {
+      "get": {
+        "tags": ["Disponibilidade Médica"],
+        "summary": "Listar a agenda completa do médico por dia",
+        "description": "Retorna a lista completa de consultas detalhadas de um médico para o dia especificado, trazendo os nomes dos respectivos pacientes via SQL JOIN. **Privilégio Admin**.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "providerId",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "ID do médico"
+          },
+          {
+            "in": "query",
+            "name": "day",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 15
+          },
+          {
+            "in": "query",
+            "name": "month",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 6
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 2026
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista cronológica de consultas do médico encontrada com sucesso"
+          }
+        }
+      }
+    }
+  }
+}

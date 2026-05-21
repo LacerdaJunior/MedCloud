@@ -24,7 +24,7 @@ class DeleteAppointmentsUseCase {
 
     return {
       deletedAppointment,
-      message: "consulta deletada com sucesso",
+      message: "Consulta deletada com sucesso.",
       date,
     };
   }
