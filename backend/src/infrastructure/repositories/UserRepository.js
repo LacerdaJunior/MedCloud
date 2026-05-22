@@ -25,7 +25,7 @@ class UserRepository {
   async findById(id) {
     const result = await pool.query(`SELECT * FROM users WHERE id  = $1`, [id]);
     if (result.rows.length > 0) {
-      return userId.rows[0];
+      return result.rows[0];
     }
     return null;
   }

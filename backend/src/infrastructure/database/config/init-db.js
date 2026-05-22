@@ -26,6 +26,9 @@ async function CreateTables() {
         );
     `);
     console.log("✅ Tabela appointments criada com sucesso!");
+    await pool.query(
+      `ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW();`,
+    ); //updated at, essencial.
   } catch (error) {
     console.error("❌ Erro ao criar tabelas:", error);
   } finally {

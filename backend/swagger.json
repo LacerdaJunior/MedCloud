@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "MedCloud API",
-    "description": "Documentação completa das rotas da API MedCloud. Inclui gestão de usuários, autenticação, controle de perfil e agendamentos médicos.",
+    "description": "# 🚀 Guia Rápido de Teste\n\nBem-vindo à documentação do MedCloud! Para testar as funcionalidades protegidas, utilize as credenciais pré-configuradas abaixo para gerar o seu Token JWT na rota `/sessions`.\n\n### 👨‍⚕️ Conta de Médico (Admin)\n- **Email:** medico@medcloud.com\n- **Senha:** 123456\n- **ID do Médico:** `550e8400-e29b-41d4-a716-446655440000` *(Use para listar a disponibilidade ou agendar como paciente)*\n\n### 🧑‍🦱 Conta de Paciente\n- **Email:** paciente@medcloud.com\n- **Senha:** 123456\n- **ID do Paciente:** `660e8400-e29b-41d4-a716-446655440000`\n\n---\n\n### 🛠️ Como testar:\n1. Abra a rota `POST /sessions`, faça login como Médico ou Paciente.\n2. Copie a string do `token` na resposta.\n3. Vá ao topo da página, clique em 🔒 **Authorize** e cole o token.\n4. Para testar as rotas de Disponibilidade, cole o ID do Médico fornecido acima no campo `providerId`.",
     "version": "1.0.0"
   },
   "servers": [
@@ -20,6 +20,25 @@
       }
     }
   },
+  "tags": [
+    {
+      "name": "Usuários & Perfil",
+      "description": "1. Primeiro passo: Crie a sua conta aqui"
+    },
+    {
+      "name": "Autenticação",
+      "description": "2. Segundo passo: Gere o seu Token de acesso"
+    },
+    {
+      "name": "Agendamentos",
+      "description": "3. Terceiro passo: Gerencie as consultas"
+    },
+    {
+      "name": "Disponibilidade Médica",
+      "description": "Consultas de horários e agenda"
+    }
+  ],
+
   "paths": {
     "/users": {
       "post": {
@@ -59,7 +78,7 @@
     "/users/profile": {
       "get": {
         "tags": ["Usuários & Perfil"],
-        "summary": "Visualizar perfil do usuário autenticado",
+        "summary": "Visualizar perfil do usuário autenticado (deve estar autenticado, conforme passo 2).",
         "description": "Retorna os dados públicos do perfil do usuário associado ao Token JWT enviado.",
         "security": [{ "bearerAuth": [] }],
         "responses": {
@@ -71,7 +90,7 @@
     "/users/profile/update": {
       "patch": {
         "tags": ["Usuários & Perfil"],
-        "summary": "Atualização de dados do perfil",
+        "summary": "Atualização de dados do perfil (deve estar autenticado, conforme passo 2).",
         "description": "Permite atualização parcial (nome e e-mail). Para alterar a senha, é obrigatório fornecer o 'oldPassword' para validação criptográfica.",
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
